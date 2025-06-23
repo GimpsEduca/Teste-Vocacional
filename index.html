@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Vocacional - Descubra Sua Inteligência Dominante</title>
+    <style>
+        :root {
+            --primary-dark: #0a192f;
+            --primary: #172a45;
+            --secondary: #64ffda;
+            --text-primary: #e6f1ff;
+            --text-secondary: #8892b0;
+            --chart-primary: #64ffda;
+            --chart-secondary: #1a7a72;
+            --highlight: #1e90ff;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--primary-dark);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--secondary);
+            padding-bottom: 20px;
+        }
+        
+        h1 {
+            color: var(--secondary);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        h2 {
+            color: var(--secondary);
+            font-size: 1.8rem;
+        }
+        
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .test-container {
+            background-color: var(--primary);
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+        }
+        
+        .question {
+            margin-bottom: 25px;
+            display: none;
+        }
+        
+        .question.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .question h3 {
+            color: var(--secondary);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .option {
+            background-color: rgba(10, 25, 47, 0.7);
+            border: 1px solid var(--text-secondary);
+            border-radius: 5px;
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .option:hover {
+            border-color: var(--secondary);
+            background-color: rgba(100, 255, 218, 0.1);
+        }
+        
+        .option.selected {
+            background-color: rgba(100, 255, 218, 0.2);
+            border-color: var(--secondary);
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        button {
+            background-color: var(--secondary);
+            color: var(--primary-dark);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            background-color: #52d3b9;
+            transform: translateY(-2px);
+        }
+        
+        button:disabled {
+            background-color: var(--text-secondary);
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .progress-container {
+            width: 100%;
+            background-color: var(--primary-dark);
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: var(--secondary);
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .result-container {
+            display: none;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        
+        .intelligence-card {
+            background-color: var(--primary);
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 4px solid var(--secondary);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .intelligence-card h3 {
+            color: var(--secondary);
+            margin-top: 0;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .professions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .profession-tag {
+            background-color: rgba(100, 255, 218, 0.1);
+            color: var(--secondary);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        .profession-tag:hover {
+            background-color: rgba(100, 255, 218, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .restart-btn {
+            margin-top: 30px;
+            font-size: 1.1rem;
+            padding: 12px 25px;
+        }
+        
+        .score-display {
+            margin-top: 40px;
+            background-color: var(--primary);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .score-display h3 {
+            color: var(--secondary);
+            margin-top: 0;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+        
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(136, 146, 176, 0.2);
+        }
+        
+        .score-label {
+            font-weight: bold;
+            width: 200px;
+            color: var(--text-primary);
+            font-size: 1.05rem;
+        }
+        
+        .score-bar-container {
+            flex-grow: 1;
+            height: 24px;
+            background-color: rgba(136, 146, 176, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 0 20px;
+            position: relative;
+        }
+        
+        .score-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--chart-secondary), var(--chart-primary));
+            border-radius: 12px;
+            transition: width 0.8s ease;
+            position: relative;
+        }
+        
+        .score-percentage {
+            position: absolute;
+            right: 10px;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-shadow: 0 0 3px rgba(0,0,0,0.5);
+        }
+        
+        .score-value {
+            width: 50px;
+            text-align: right;
+            font-weight: bold;
+            color: var(--secondary);
+            font-size: 1.1rem;
+        }
+        
+        .dominant-badge {
+            display: inline-block;
+            background-color: var(--highlight);
+            color: var(--primary-dark);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-left: 15px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(30, 144, 255, 0.7); }
+            50% { transform: scale(1.05); box-shadow: 0 0 0 5px rgba(30, 144, 255, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(30, 144, 255, 0); }
+        }
+        
+        .result-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .result-header h2 {
+            margin-bottom: 10px;
+        }
+        
+        .result-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .score-label {
+                width: 140px;
+                font-size: 0.95rem;
+            }
+            
+            .score-bar-container {
+                margin: 0 10px;
+                height: 20px;
+            }
+            
+            .intelligence-card h3 {
+                font-size: 1.5rem;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .dominant-badge {
+                margin-left: 0;
+                margin-top: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>TESTE VOCACIONAL</h1>
+            <p class="subtitle">Descubra sua inteligência dominante e as profissões que combinam com você</p>
+        </header>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        
+        <div id="testForm">
+            <!-- Question 1 -->
+            <div class="question active" id="q1">
+                <h3>1. Qual sua principal habilidade?</h3>
+                <div class="options">
+                    <div class="option" data-points="logico:10,linguistica:2">Raciocínio rápido e lógico</div>
+                    <div class="option" data-points="linguistica:10,interpessoal:3">Comunicação e expressão</div>
+                    <div class="option" data-points="espacial:10,corporal:2">Visualização espacial e criatividade</div>
+                    <div class="option" data-points="corporal:10,interpessoal:2">Coordenação física e habilidades manuais</div>
+                    <div class="option" data-points="interpessoal:10,intrapessoal:3">Entender e ajudar pessoas</div>
+                </div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. Quais tipos de trabalho prefere?</h3>
+                <div class="options">
+                    <div class="option" data-points="logico:8,intrapessoal:5">Individual, com foco e concentração</div>
+                    <div class="option" data-points="linguistica:7,interpessoal:6">Em dupla, colaborando com outra pessoa</div>
+                    <div class="option" data-points="interpessoal:8,corporal:4">Em grupo, com muita interação</div>
+                    <div class="option" data-points="espacial:7,musical:5">Tanto faz, desde que seja criativo</div>
+                    <div class="option" data-points="naturalista:8,existencial:4">Depende do tipo de projeto</div>
+                </div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. Em um trabalho em grupo, qual é seu papel?</h3>
+                <div class="options">
+                    <div class="option" data-points="logico:9,linguistica:3">O pesquisador/analista de dados</div>
+                    <div class="option" data-points="linguistica:8,interpessoal:5">O comunicador/apresentador</div>
+                    <div class="option" data-points="espacial:9,corporal:4">O criativo/designer</div>
+                    <div class="option" data-points="interpessoal:9,intrapessoal:4">O mediador/coordenador</div>
+                    <div class="option" data-points="naturalista:8,existencial:5">O observador/estrategista</div>
+                </div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. Que tipos de jogos prefere?</h3>
+                <div class="options">
+                    <div class="option" data-points="logico:9,linguistica:2">Xadrez, sudoku, quebra-cabeças lógicos</div>
+                    <div class="option" data-points="linguistica:8,interpessoal:4">Palavras cruzadas, jogos de perguntas e respostas</div>
+                    <div class="option" data-points="espacial:9,corporal:3">Jogos de construção, legos, minecraft</div>
+                    <div class="option" data-points="corporal:9,interpessoal:3">Esportes, jogos de ação física</div>
+                    <div class="option" data-points="musical:9,existencial:3">Jogos musicais ou de ritmo</div>
+                </div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. No ambiente de trabalho, o que mais valoriza?</h3>
+                <div class="options">
+                    <div class="option" data-points="logico:8,intrapessoal:4">Constância e organização</div>
+                    <div class="option" data-points="linguistica:8,interpessoal:4">Criatividade e expressão</div>
+                    <div class="option" data-points="espacial:8,corporal:4">Flexibilidade e liberdade</div>
+                    <div class="option" data-points="interpessoal:8,musical:3">Relacionamentos e colaboração</div>
+                    <div class="option" data-points="naturalista:8,existencial:4">Desafios e aprendizado constante</div>
+                </div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. Você prefere rotina ou novidade?</h3>
+                <div class="options">
+                    <div class="option" data-points="logico:8,intrapessoal:4">Rotina, gosto de dominar o que faço</div>
+                    <div class="option" data-points="linguistica:6,espacial:6">Depende, mas gosto de variedade</div>
+                    <div class="option" data-points="espacial:8,corporal:4">Novidade, adoro explorar coisas novas</div>
+                    <div class="option" data-points="interpessoal:7,musical:5">Prefiro novidade, especialmente com pessoas</div>
+                    <div class="option" data-points="naturalista:7,existencial:5">Um equilíbrio entre os dois</div>
+                </div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. Com quais tipos de pessoas prefere trabalhar?</h3>
+                <div class="options">
+                    <div class="option" data-points="logico:8,intrapessoal:4">Reservadas e focadas</div>
+                    <div class="option" data-points="linguistica:8,interpessoal:4">Comunicativas e expressivas</div>
+                    <div class="option" data-points="espacial:8,corporal:4">Criativas e inovadoras</div>
+                    <div class="option" data-points="interpessoal:8,musical:4">Energéticas e motivadoras</div>
+                    <div class="option" data-points="naturalista:8,existencial:4">Pensadoras e reflexivas</div>
+                </div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. O que você valoriza num futuro trabalho?</h3>
+                <div class="options">
+                    <div class="option" data-points="logico:9,intrapessoal:4">Estabilidade e um salário que me dê segurança</div>
+                    <div class="option" data-points="linguistica:8,espacial:5">Que eu possa me expressar e ser criativo</div>
+                    <div class="option" data-points="interpessoal:9,musical:3">Que envolva pessoas, conversas e relacionamentos</div>
+                    <div class="option" data-points="corporal:8,naturalista:4">Que seja prático e com resultados concretos</div>
+                    <div class="option" data-points="existencial:8,espacial:4">Que me desafie intelectualmente</div>
+                </div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. Se você tivesse que escolher um tipo de atividade...</h3>
+                <div class="options">
+                    <div class="option" data-points="logico:9,intrapessoal:3">Algo com lógica, números, dados ou máquinas</div>
+                    <div class="option" data-points="linguistica:8,interpessoal:5">Algo onde eu possa me comunicar e expressar ideias</div>
+                    <div class="option" data-points="espacial:9,corporal:3">Algo criativo, livre e fora do comum</div>
+                    <div class="option" data-points="interpessoal:9,musical:3">Algo onde eu ajude alguém ou tenha contato com pessoas</div>
+                    <div class="option" data-points="naturalista:8,existencial:5">Algo em que eu possa aprender fazendo</div>
+                </div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. Quando pensa no futuro profissional...</h3>
+                <div class="options">
+                    <div class="option" data-points="logico:9,intrapessoal:4">Me vejo resolvendo problemas complexos</div>
+                    <div class="option" data-points="linguistica:8,interpessoal:5">Me imagino comunicando ideias ou histórias</div>
+                    <div class="option" data-points="espacial:9,corporal:3">Sonho em criar, construir ou inventar algo</div>
+                    <div class="option" data-points="interpessoal:9,musical:3">Me vejo ajudando pessoas ou fazendo algo social</div>
+                    <div class="option" data-points="naturalista:8,existencial:5">Quero entender o mundo e como as coisas funcionam</div>
+                </div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. O que você costuma fazer bem sem muito esforço?</h3>
+                <div class="options">
+                    <div class="option" data-points="logico:8,intrapessoal:4">Organizar tarefas ou espaços</div>
+                    <div class="option" data-points="linguistica:8,interpessoal:5">Fazer amigos ou conversar com facilidade</div>
+                    <div class="option" data-points="espacial:8,corporal:4">Criar histórias, desenhos, músicas</div>
+                    <div class="option" data-points="interpessoal:8,musical:4">Entender como as pessoas se sentem</div>
+                    <div class="option" data-points="naturalista:8,existencial:4">Observar o que os outros não veem</div>
+                </div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. Qual dessas tarefas você evitaria se pudesse?</h3>
+                <div class="options">
+                    <div class="option" data-points="linguistica:8,interpessoal:5">Apresentar um trabalho na frente de muita gente</div>
+                    <div class="option" data-points="logico:8,intrapessoal:5">Ficar sentado por horas fazendo cálculos ou análises</div>
+                    <div class="option" data-points="espacial:8,corporal:5">Ter que seguir regras rígidas e repetitivas</div>
+                    <div class="option" data-points="interpessoal:8,musical:4">Ter que lidar com emoções e problemas das pessoas</div>
+                    <div class="option" data-points="corporal:8,naturalista:5">Fazer trabalhos manuais ou muito práticos</div>
+                </div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. Como você prefere aprender algo novo?</h3>
+                <div class="options">
+                    <div class="option" data-points="linguistica:8,interpessoal:4">Assistindo vídeos e tutoriais</div>
+                    <div class="option" data-points="logico:8,intrapessoal:5">Lendo ou pesquisando sozinho</div>
+                    <div class="option" data-points="corporal:8,naturalista:5">Tentando na prática, errando e corrigindo</div>
+                    <div class="option" data-points="interpessoal:8,musical:4">Conversando com outras pessoas</div>
+                    <div class="option" data-points="espacial:8,existencial:4">Criando algo a partir do que aprendi</div>
+                </div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. Diante de um problema difícil, você geralmente...</h3>
+                <div class="options">
+                    <div class="option" data-points="logico:9,intrapessoal:4">Analisa em silêncio até encontrar uma saída lógica</div>
+                    <div class="option" data-points="interpessoal:8,linguistica:5">Pede ajuda e discute com outras pessoas</div>
+                    <div class="option" data-points="espacial:8,corporal:5">Tenta resolver com criatividade, mesmo sem saber direito</div>
+                    <div class="option" data-points="corporal:8,naturalista:5">Entra em ação e ajusta o plano conforme o problema evolui</div>
+                    <div class="option" data-points="existencial:8,musical:4">Fica um pouco travado, mas tenta resolver com calma</div>
+                </div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. Como você se sente ao trabalhar com regras fixas?</h3>
+                <div class="options">
+                    <div class="option" data-points="logico:8,intrapessoal:4">Gosto, me ajudam a manter o foco</div>
+                    <div class="option" data-points="linguistica:7,interpessoal:6">Depende do tipo de regra — algumas atrapalham</div>
+                    <div class="option" data-points="espacial:8,corporal:5">Prefiro liberdade e autonomia</div>
+                    <div class="option" data-points="interpessoal:7,musical:5">Aceito, mas gosto de dar meu toque pessoal</div>
+                    <div class="option" data-points="naturalista:7,existencial:5">Fico entediado com rotina demais</div>
+                </div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. Qual frase parece mais com você?</h3>
+                <div class="options">
+                    <div class="option" data-points="logico:9,intrapessoal:4">"Gosto de pensar em soluções inteligentes."</div>
+                    <div class="option" data-points="corporal:8,naturalista:5">"Gosto de fazer as coisas com minhas próprias mãos."</div>
+                    <div class="option" data-points="interpessoal:9,musical:3">"Gosto de ajudar os outros a se sentirem melhor."</div>
+                    <div class="option" data-points="espacial:8,linguistica:5">"Gosto de imaginar e criar coisas novas."</div>
+                    <div class="option" data-points="existencial:8,linguistica:4">"Gosto de organizar e manter tudo sob controle."</div>
+                </div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. Se pudesse passar um dia experimentando profissões, qual escolheria primeiro?</h3>
+                <div class="options">
+                    <div class="option" data-points="interpessoal:9,linguistica:4">Médico(a), psicólogo(a) ou educador(a)</div>
+                    <div class="option" data-points="logico:9,intrapessoal:4">Engenheiro(a), programador(a) ou cientista</div>
+                    <div class="option" data-points="espacial:9,corporal:4">Fotógrafo(a), estilista ou designer</div>
+                    <div class="option" data-points="corporal:8,naturalista:5">Técnico(a), mecânico(a) ou agrônomo(a)</div>
+                    <div class="option" data-points="linguistica:8,interpessoal:5">Empresário(a), gerente ou vendedor(a)</div>
+                </div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. Que tipo de desafio te motiva a continuar tentando?</h3>
+                <div class="options">
+                    <div class="option" data-points="logico:9,intrapessoal:4">Resolver um problema lógico ou técnico</div>
+                    <div class="option" data-points="linguistica:8,interpessoal:5">Convencer alguém de uma ideia</div>
+                    <div class="option" data-points="espacial:9,corporal:4">Inventar algo novo</div>
+                    <div class="option" data-points="interpessoal:9,musical:3">Ajudar alguém a superar uma dificuldade</div>
+                    <div class="option" data-points="corporal:8,naturalista:5">Montar, consertar ou testar algo na prática</div>
+                </div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. Com qual tipo de rotina você mais se identifica?</h3>
+                <div class="options">
+                    <div class="option" data-points="logico:8,intrapessoal:5">Fazer a mesma coisa todos os dias, com segurança</div>
+                    <div class="option" data-points="linguistica:7,interpessoal:6">Ter liberdade para planejar e mudar conforme preciso</div>
+                    <div class="option" data-points="espacial:8,corporal:5">Fazer muitas coisas diferentes, mesmo que tenha pressão</div>
+                    <div class="option" data-points="interpessoal:7,musical:5">Ter tarefas claras, mas com espaço para ser criativo</div>
+                    <div class="option" data-points="naturalista:7,existencial:5">Não ter rotina nenhuma — cada dia uma coisa nova</div>
+                </div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. Como você define sucesso profissional?</h3>
+                <div class="options">
+                    <div class="option" data-points="logico:8,intrapessoal:5">Ter um bom salário e estabilidade</div>
+                    <div class="option" data-points="linguistica:7,espacial:6">Fazer o que gosto, mesmo que ganhe menos</div>
+                    <div class="option" data-points="interpessoal:8,musical:4">Ajudar pessoas e sentir que faço a diferença</div>
+                    <div class="option" data-points="espacial:8,corporal:5">Ser reconhecido por minhas ideias ou criações</div>
+                    <div class="option" data-points="existencial:8,naturalista:5">Crescer e conquistar meu próprio espaço</div>
+                </div>
+            </div>
+            
+            <!-- Navigation buttons -->
+            <div class="navigation">
+                <button id="prevBtn" disabled>Anterior</button>
+                <button id="nextBtn">Próxima</button>
+            </div>
+        </div>
+        
+        <!-- Results section -->
+        <div class="result-container" id="resultContainer">
+            <div class="result-header">
+                <h2>Seu Resultado</h2>
+                <p>Com base nas suas respostas, sua inteligência mais destacada é:</p>
+            </div>
+            
+            <div class="intelligence-card" id="primaryIntelligence">
+                <h3 id="primaryTitle"></h3>
+                <p id="primaryDesc"></p>
+                <div class="professions" id="primaryProfessions"></div>
+            </div>
+            
+            <div class="score-display">
+                <h3>Detalhes da Pontuação</h3>
+                <div id="scoresContainer"></div>
+            </div>
+            
+            <button class="restart-btn" id="restartBtn">Fazer o teste novamente</button>
+        </div>
+    </div>
+
+    <script>
+        // Intelligence definitions
+        const intelligences = {
+            logico: {
+                name: "Inteligência Lógico-Matemática",
+                description: "Você tem grande capacidade de raciocínio lógico, resolução de problemas complexos e pensamento analítico. Pensa de forma estruturada e metodológica, com facilidade para trabalhar com números, padrões e sistemas.",
+                professions: ["Engenheiro", "Cientista de Dados", "Matemático", "Programador", "Estatístico", "Físico", "Contador", "Analista de Sistemas"]
+            },
+            linguistica: {
+                name: "Inteligência Linguística",
+                description: "Sua capacidade de usar a linguagem de forma eficaz, tanto escrita quanto oral, é notável. Você tem facilidade para aprender idiomas, comunicar ideias e se expressar de maneira clara e persuasiva.",
+                professions: ["Escritor", "Jornalista", "Advogado", "Professor", "Tradutor", "Roteirista", "Publicitário", "Locutor"]
+            },
+            espacial: {
+                name: "Inteligência Espacial",
+                description: "Você possui uma percepção apurada do mundo visual e espacial, com capacidade de visualizar, criar e manipular imagens mentalmente. Tem talento para pensar em três dimensões e transformar ideias em representações visuais.",
+                professions: ["Arquiteto", "Designer", "Artista", "Piloto", "Fotógrafo", "Diretor de Cinema", "Cartógrafo", "Designer de Games"]
+            },
+            corporal: {
+                name: "Inteligência Corporal-Cinestésica",
+                description: "Você tem um controle corporal excepcional e grande habilidade para usar o corpo para resolver problemas ou criar produtos. Sua coordenação, equilíbrio e destreza manual são pontos fortes.",
+                professions: ["Atleta", "Cirurgião", "Dançarino", "Artesão", "Ator", "Mecânico", "Coreógrafo", "Fisioterapeuta"]
+            },
+            interpessoal: {
+                name: "Inteligência Interpessoal",
+                description: "Você tem uma habilidade natural para entender e interagir com outras pessoas. Percebe facilmente humores, temperamentos, motivações e intenções alheias, sendo capaz de trabalhar bem em grupo.",
+                professions: ["Psicólogo", "Professor", "Vendedor", "Politico", "Recursos Humanos", "Assistente Social", "Coach", "Relacionamento com Cliente"]
+            },
+            intrapessoal: {
+                name: "Inteligência Intrapessoal",
+                description: "Você possui um profundo autoconhecimento, compreendendo bem suas próprias emoções, motivações e objetivos. Tem facilidade para refletir sobre si mesmo e planejar sua vida de forma consciente.",
+                professions: ["Psicólogo", "Filósofo", "Escritor", "Consultor", "Empreendedor", "Terapeuta", "Life Coach", "Pesquisador"]
+            },
+            musical: {
+                name: "Inteligência Musical",
+                description: "Você tem uma sensibilidade especial para sons, ritmos, melodias e timbres. Reconhece, cria e se expressa através da música com facilidade, podendo ter talento para composição ou execução musical.",
+                professions: ["Músico", "Compositor", "Produtor Musical", "Maestro", "DJ", "Engenheiro de Som", "Musicoterapeuta", "Crítico Musical"]
+            },
+            naturalista: {
+                name: "Inteligência Naturalista",
+                description: "Você tem uma grande capacidade de reconhecer e classificar padrões na natureza, compreendendo sistemas naturais e ecológicos. Possui sensibilidade para plantas, animais e fenômenos naturais.",
+                professions: ["Biólogo", "Geólogo", "Veterinário", "Agricultor", "Ambientalista", "Meteorologista", "Oceanógrafo", "Botânico"]
+            },
+            existencial: {
+                name: "Inteligência Existencial",
+                description: "Você tem uma inclinação para refletir sobre questões fundamentais da existência, como o significado da vida, a morte, o cosmos. Busca compreender o mundo em sua totalidade e profundidade.",
+                professions: ["Filósofo", "Teólogo", "Físico Teórico", "Sociólogo", "Psicanalista", "Astrônomo", "Escritor", "Pesquisador"]
+            }
+        };
+
+        // Variables to track test progress
+        let currentQuestion = 1;
+        const totalQuestions = 20;
+        const scores = {
+            logico: 0,
+            linguistica: 0,
+            espacial: 0,
+            corporal: 0,
+            interpessoal: 0,
+            intrapessoal: 0,
+            musical: 0,
+            naturalista: 0,
+            existencial: 0
+        };
+
+        // DOM elements
+        const progressBar = document.getElementById('progressBar');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const testForm = document.getElementById('testForm');
+        const resultContainer = document.getElementById('resultContainer');
+        const scoresContainer = document.getElementById('scoresContainer');
+
+        // Initialize the test
+        updateProgressBar();
+        
+        // Event listeners
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove selected class from all options in this question
+                this.parentNode.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                // Add selected class to clicked option
+                this.classList.add('selected');
+                
+                // Enable next button
+                nextBtn.disabled = false;
+            });
+        });
+
+        nextBtn.addEventListener('click', function() {
+            // Get selected option and add points
+            const selectedOption = document.querySelector(`#q${currentQuestion} .option.selected`);
+            if (selectedOption) {
+                const pointsData = selectedOption.getAttribute('data-points');
+                const points = pointsData.split(',');
+                
+                points.forEach(point => {
+                    const [intelligence, value] = point.split(':');
+                    scores[intelligence] += parseInt(value);
+                });
+                
+                // Move to next question
+                document.getElementById(`q${currentQuestion}`).classList.remove('active');
+                currentQuestion++;
+                
+                if (currentQuestion <= totalQuestions) {
+                    document.getElementById(`q${currentQuestion}`).classList.add('active');
+                    updateProgressBar();
+                    prevBtn.disabled = false;
+                    
+                    // Disable next button until option is selected
+                    nextBtn.disabled = true;
+                    
+                    // Scroll to top of question
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    // Test is complete - show results
+                    showResults();
+                }
+            }
+        });
+
+        prevBtn.addEventListener('click', function() {
+            // Move to previous question
+            document.getElementById(`q${currentQuestion}`).classList.remove('active');
+            currentQuestion--;
+            document.getElementById(`q${currentQuestion}`).classList.add('active');
+            updateProgressBar();
+            
+            if (currentQuestion === 1) {
+                prevBtn.disabled = true;
+            }
+            
+            // Enable next button if there's a selected option
+            if (document.querySelector(`#q${currentQuestion} .option.selected`)) {
+                nextBtn.disabled = false;
+            } else {
+                nextBtn.disabled = true;
+            }
+            
+            // Scroll to top of question
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        restartBtn.addEventListener('click', function() {
+            // Reset test
+            currentQuestion = 1;
+            for (const intelligence in scores) {
+                scores[intelligence] = 0;
+            }
+            
+            // Clear all selections
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Hide results and show first question
+            resultContainer.style.display = 'none';
+            testForm.style.display = 'block';
+            document.getElementById('q1').classList.add('active');
+            for (let i = 2; i <= totalQuestions; i++) {
+                document.getElementById(`q${i}`).classList.remove('active');
+            }
+            
+            // Reset buttons
+            prevBtn.disabled = true;
+            nextBtn.disabled = true;
+            updateProgressBar();
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Helper functions
+        function updateProgressBar() {
+            const progress = (currentQuestion / totalQuestions) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function showResults() {
+            // Hide test form and show results
+            testForm.style.display = 'none';
+            resultContainer.style.display = 'block';
+            
+            // Sort intelligences by score
+            const sortedIntelligences = Object.keys(scores).sort((a, b) => scores[b] - scores[a]);
+            
+            // Get primary intelligence
+            const primary = sortedIntelligences[0];
+            
+            // Find max score for percentage calculation
+            const maxScore = Math.max(...Object.values(scores));
+            
+            // Display primary intelligence
+            document.getElementById('primaryTitle').textContent = intelligences[primary].name;
+            document.getElementById('primaryDesc').textContent = intelligences[primary].description;
+            const primaryProfessions = document.getElementById('primaryProfessions');
+            primaryProfessions.innerHTML = '';
+            intelligences[primary].professions.forEach(prof => {
+                const tag = document.createElement('span');
+                tag.className = 'profession-tag';
+                tag.textContent = prof;
+                primaryProfessions.appendChild(tag);
+            });
+            
+            // Display all scores in a visual way
+            scoresContainer.innerHTML = '';
+            sortedIntelligences.forEach(intelligence => {
+                const scoreItem = document.createElement('div');
+                scoreItem.className = 'score-item';
+                
+                const scoreLabel = document.createElement('div');
+                scoreLabel.className = 'score-label';
+                scoreLabel.textContent = intelligences[intelligence].name;
+                if (intelligence === primary) {
+                    const badge = document.createElement('span');
+                    badge.className = 'dominant-badge';
+                    badge.textContent = 'DOMINANTE';
+                    scoreLabel.appendChild(badge);
+                }
+                
+                const scoreBarContainer = document.createElement('div');
+                scoreBarContainer.className = 'score-bar-container';
+                
+                const scoreBar = document.createElement('div');
+                scoreBar.className = 'score-bar';
+                const percentage = (scores[intelligence] / maxScore) * 100;
+                scoreBar.style.width = `${percentage}%`;
+                
+                // Add percentage text inside the bar
+                const scorePercentage = document.createElement('span');
+                scorePercentage.className = 'score-percentage';
+                scorePercentage.textContent = `${Math.round(percentage)}%`;
+                scoreBar.appendChild(scorePercentage);
+                
+                const scoreValue = document.createElement('div');
+                scoreValue.className = 'score-value';
+                scoreValue.textContent = scores[intelligence];
+                
+                scoreBarContainer.appendChild(scoreBar);
+                scoreItem.appendChild(scoreLabel);
+                scoreItem.appendChild(scoreBarContainer);
+                scoreItem.appendChild(scoreValue);
+                
+                scoresContainer.appendChild(scoreItem);
+            });
+            
+            // Scroll to top of results
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
